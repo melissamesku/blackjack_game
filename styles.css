@@ -1,0 +1,13 @@
+#dealer-hand {
+	width: 80%;
+	max-width: 100;
+}
+
+.card {
+	background-color: #eee;
+	height:130px;
+	width:95px;
+	border: 1px solid black;
+	border-radius: 10px;
+	display: inline-block;
+}
