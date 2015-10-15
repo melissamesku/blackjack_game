@@ -5,13 +5,15 @@
 var playerHand = []; // should this be in global scope or inside this function?
 var dealerHand = []; // should this be in global scope or inside this function?
 var cards = []; //this is also named inside the deck function, but i think it should be in global scope instead
-var wallet;
-
+var wallet = 100;
+var playerArea = document.getElementById('player-area');
+var dealerArea = document.getElementById('dealer-area');
 
 
 //*****************************
 // CREATE DECK ARRAY
 //*****************************
+//window onload here
 
 var card = function(value, name, suit){
     this.value = value;
@@ -37,25 +39,28 @@ var shuffle = function(deck) {
         return deck;
 };
 
-var myDeck = new deck();
+var theDeck = new deck();
+
+shuffle(theDeck);
 
 //*****************************
 // CREATE CARDS FOR THE DOM
 //*****************************
 
-function makeCardImage(play, hand){
-	myDeck = shuffle(myDeck);
-	console.log(myDeck);
-	for(var z=0; z<myDeck.length; z++) {
+function makeCardImage(lastCardDealt, handOfPlayerOrDealer){
+	theDeck = shuffle(theDeck);
+	for(var z=0; z<theDeck.length; z++) {
 		div = document.createElement('div');
 		div.className = 'card';
-		if(myDeck[i].suit == 'Diamonds'){
+		var i;
+		if (lastCardDealt.suit == 'Diamonds'){
 			var ascii_char = '&diams;';
-		} else {
-			var ascii_char = '&' + myDeck[i].suit.toLowerCase() + ';';
+		} 
+		else {
+			var ascii_char = '&' + lastCardDealt[0].suit.toLowerCase() + ';';
 		}
-		div.innerHTML = '<span class="number">' + myDeck[i].name + '</span><span class="suit">' + ascii_char + '</span>';
-		hand.appendChild(div); //this will get appended to whomever's hand ...somehow
+		div.innerHTML = '<span class="number">' + lastCardDealt[0].name + '</span><span class="suit">' + ascii_char + '</span>';
+		handOfPlayerOrDealer.appendChild(div); //this will get appended to whomever's hand ...somehow
 	}
 }
 
@@ -63,13 +68,41 @@ function makeCardImage(play, hand){
 // DEAL
 //*****************************
 
-/* set bet function:
-
- */
+ // set bet function:
+ 
 
 var deal = function() {
+	wallet = 100;
+	playerHand = [];
+	dealerHand = [];
+	cards = [];
+	shuffle(theDeck);
 
+
+	wallet = wallet - 5;
+	playerHand.push(theDeck.pop());
+	console.log(playerHand);
+	makeCardImage(playerHand, playerArea);
+	// makeCardImage(playerHand[0], playerHand); // this isn't working -- I want it to make a card and display it in the DOM
+	// var waitDealer = setTimeout(cardToDealer, 1000);
+	cardToDealer();
+	// var displayPlayerTotal = function() {
+
+	// 	console.log("umm");
+	// }
 }
+
+var cardToDealer = function() {
+		console.log(dealerHand);
+		dealerHand.push(theDeck.pop());
+	    makeCardImage(dealerHand, dealerArea);
+	}
+
+var cardToPlayer = function() {
+		console.log(playerHand);
+		playerHand.push(theDeck.pop());
+	    makeCardImage(playerHand, playerArea);
+	}
 
 /* deal function: 
 	  subtract money from the player's wallet
