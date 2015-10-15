@@ -1,26 +1,17 @@
-// Basic pseudo code
-// 1. Place Bet
-// 2. Deck Array is shuffled
-// 3. 2 cards from Array are dealt to player
-// 4. 2 cards from Array are dealt to dealer
-// 5. player and dealer check value of cards
-// 6. if player cards add up to 21, player wins (Blackjack)
-// 7.  if player cards don't add up to 21, then:
-// 8.  loop --
-            // 9. player chooses to hit or stand
-            // 10. if hit, add card from deck to hand and add values of player cards
-            // 11. loop continues until the player decides to stand
-// 12. after loop ======>
-// 13. compare hands of player and dealer
-// 14. if player is under 21 and greater than dealer, player wins;
-// 15. if dealer is under 21 and greater than player, dealer wins;
-// 16. if player and dealer have same values, it is a push ('tie');
-// 17. if player wins, they get bet plus dealer’s bet
-// 18. if dealer wins, they keep the bet
+//*****************************
+// GLOBAL VARIABLES
+//*****************************
 
 var playerHand = []; // should this be in global scope or inside this function?
 var dealerHand = []; // should this be in global scope or inside this function?
 var cards = []; //this is also named inside the deck function, but i think it should be in global scope instead
+var wallet;
+
+
+
+//*****************************
+// CREATE DECK ARRAY
+//*****************************
 
 var card = function(value, name, suit){
     this.value = value;
@@ -48,8 +39,11 @@ var shuffle = function(deck) {
 
 var myDeck = new deck();
 
-window.onload = function(){
-	// where should this go? kyle has it placed here, with everything that follows to be inside the bracket on next line :/
+//*****************************
+// CREATE CARDS FOR THE DOM
+//*****************************
+
+function makeCardImage(play, hand){
 	myDeck = shuffle(myDeck);
 	console.log(myDeck);
 	for(var z=0; z<myDeck.length; z++) {
@@ -61,79 +55,84 @@ window.onload = function(){
 			var ascii_char = '&' + myDeck[i].suit.toLowerCase() + ';';
 		}
 		div.innerHTML = '<span class="number">' + myDeck[i].name + '</span><span class="suit">' + ascii_char + '</span>';
-		document.body.appendChild(div);
+		hand.appendChild(div); //this will get appended to whomever's hand ...somehow
 	}
-
 }
 
+//*****************************
+// DEAL
+//*****************************
 
+/* set bet function:
 
-var dealOrDraw = function() {
-	// if (dealt == true) draw();
-	// else deal();
-	console.log("you clicked 'deal'")
-} 
+ */
 
-//give card to dealer face down, card to player, card to dealer, card to player
 var deal = function() {
-	var dealerHand = []; // should this be in global scope or inside this function?
-	var playerHand = []; // should this be in global scope or inside this function?
-	var giveCards = cards.pop();
-	dealerHand.push(newCard);
-	// console.log("rad");
-	// shuffle(myDeck);
-	// var giveCard1 = document.getElementById('player-card-1');
-	// giveCard1.innerHTML = "yeah";
+
 }
 
-// var playerCards =[];
-// var playerCardOne = cards.pop();
-// var playerCardTwo = cards.pop();
-// playerCards.push(playerCardOne, playerCardTwo);
+/* deal function: 
+	  subtract money from the player's wallet
+	  pop a card from the main deck array
+	  push the card into the player's hand array
+	  DOM: display the player card 
+	  timeout
+	  pop a card from the main deck array
+	  push the card into the dealer's hand array
+	  DOM: display the dealer card FACEDOWN 
+	  * setAttribute for that card, id that makes it black
+	  timeout
+	  (again) pop a card from the main deck array
+	  (again) push the card into the player's hand array
+	  (again) DOM: display the player card 
+	  timeout
+	  pop a card from the main deck array
+	  push the card into the dealer's hand array
+	  DOM: display the dealer card
+	  display dealer's sum total
+	  display player's sum total 
+	  call ___checkForWin___
+ */
+
+
+//*****************************
+// PLAYER'S TURN
+//*****************************
+
+
+/* checkForWin function
+	  // First, check for blackjacks
+	  if (dealerHand === playerHand) && (dealerHand <= 21) {
+		return push;
+	  } 
+	  else if (playerHand === 21) && (dealerHand !== 21) {
+	  	return ---player got blackjack
+	  	player win $$ add ___betAmount * 1.5x___ to wallet
+	  	deal button is on again
+	  }
+	  else if (dealerHand === 21) && (playerHand !== 21) {
+	    return ---dealer got blackjack
+	    player lose $$, subtract ___betAmount___ from wallet
+	    deal button is on again
+	  } 
+	  
+
+	  // Next, check to see if anyone has busted
+	  if (playerHand > 21) && (dealerHand)
+
+
+	  // Next, check to see if the player is eligible to hit 
+	  if (dealerHand < 21)
 
 
 
+	  else if (playerHand > 21) {
+	  	return ---bust 
+	  	player lose $$, subtract ___betAmount___ from wallet
+	  }
+	  else if () {
+		
+	  }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-// window.onload = function() {
-
-//     for(var i=0; i < myDeck.length; i++){
-//         div = document.createElement('div');
-//         div.className = 'card';
-
-//         if(myDeck[i].suit == 'Diamonds'){
-//             var ascii_char = '&diams;';
-//         } else {
-//             var ascii_char = '&' + myDeck[i].suit.toLowerCase() + ';';
-//         }
-
-//         div.innerHTML = '<span class="number">' + myDeck[i].name + '</span><span class="suit">' + ascii_char + '</span>';
-//         document.body.appendChild(div);
-//     }
-
-// }
-
-
-
-
-
-
-// var randomRating = Math.random() * 10;
-// var twoRandomScores = function() {
-//     var score1 = randomRating;
-//     var score2 = randomRating;
-//     return score1 + score2;
-// }
-// twoRandomScores();
+	  _?_ are "push" and "winner" functions? wtf should they be?
+ */

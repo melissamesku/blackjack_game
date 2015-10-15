@@ -1,15 +1,32 @@
 <html>
 <head>
 	<title>Blackjack</title>
+	<link href='https://fonts.googleapis.com/css?family=Muli' rel='stylesheet' type='text/css'>
+	<link rel="stylesheet" type="text/css" href="normalize.css">
 	<link rel="stylesheet" type="text/css" href="styles.css">
 	<script type="text/javascript" src="app.js"></script>
 </head>
 <body>
-	<div>
-		<div class="card"></div>
-		<div class="card"></div>
+	<div id="container">
+		<div class="card-container" id="dealer-area">
+			<div class="card-container-text">
+				<p>Dealer's hand: </p>
+			</div>
+		</div>
+		<div class="card-container" id="player-area">
+			<p>Player's hand: 21</p>
+		</div>
+		<div class="button-container">
+			<button onclick="deal">Deal</button>
+			<button onclick="">Hit</button>
+			<button onclick="">Stand</button>
+			<br/>
+			<br/>
+			<button onclick="">Change Bet</button>
+			<input id="bet-amount"></input>
+			<p>minimum bet: $5</p>
+			<p id="walletAmount"></p>
+		</div>
 	</div>
-	<button onclick="dealOrDraw()">Deal</button>
-
 </body>
 </html>
