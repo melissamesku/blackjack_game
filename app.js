@@ -41,7 +41,7 @@ var shuffle = function(deck) {
 
 var theDeck = new deck();
 
-shuffle(theDeck);
+// shuffle(theDeck);
 
 //*****************************
 // CREATE CARDS FOR THE DOM
@@ -78,30 +78,30 @@ var deal = function() {
 	cards = [];
 	shuffle(theDeck);
 
-
 	wallet = wallet - 5;
-	playerHand.push(theDeck.pop());
-	console.log(playerHand);
-	makeCardImage(playerHand, playerArea);
-	// makeCardImage(playerHand[0], playerHand); // this isn't working -- I want it to make a card and display it in the DOM
-	// var waitDealer = setTimeout(cardToDealer, 1000);
+	cardToPlayer();
+	var waitDealer = setTimeout(cardToDealer, 1000);
+	// dealerHand[0].style.backgroundColor="#000"; //<--- this doesn't work
+	cardToPlayer();
 	cardToDealer();
-	// var displayPlayerTotal = function() {
-
-	// 	console.log("umm");
-	// }
+	//display player total
 }
 
 var cardToDealer = function() {
-		console.log(dealerHand);
-		dealerHand.push(theDeck.pop());
-	    makeCardImage(dealerHand, dealerArea);
-	}
+	console.log(dealerHand);
+	dealerHand.push(theDeck.pop());
+    makeCardImage(dealerHand, dealerArea);
+}
 
 var cardToPlayer = function() {
-		console.log(playerHand);
-		playerHand.push(theDeck.pop());
-	    makeCardImage(playerHand, playerArea);
+	console.log(playerHand);
+	playerHand.push(theDeck.pop());
+    makeCardImage(playerHand, playerArea);
+}
+
+var displayPlayerTotal = function() {
+
+		console.log("umm");
 	}
 
 /* deal function: 
