@@ -8,6 +8,8 @@ var cards = []; //this is also named inside the deck function, but i think it sh
 var wallet = 100;
 var playerArea = document.getElementById('player-area');
 var dealerArea = document.getElementById('dealer-area');
+var displayPlayerTotal;
+var displayDealerTotal;
 
 
 //*****************************
@@ -81,9 +83,9 @@ var deal = function() {
 	wallet = wallet - 5;
 	cardToPlayer();
 	var waitDealer = setTimeout(cardToDealer, 1000);
-	// dealerHand[0].style.backgroundColor="#000"; //<--- this doesn't work
-	cardToPlayer();
-	cardToDealer();
+	// dealerHand[0].style.backgroundColor="#000"; //<--- make first dealer card invisible; this line doesn't work
+	var waitPlayer = setTimeout(cardToPlayer, 1000);
+	var waitDealer2 = setTimeout(cardToDealer, 1000);
 	//display player total
 }
 
@@ -101,7 +103,9 @@ var cardToPlayer = function() {
 
 var displayPlayerTotal = function() {
 // sum of the values in player's array
-		console.log(displayPlayerTotal);
+    var playerHand = [];
+    console.log(eval(playerHand.join('+')));
+		// console.log(displayPlayerTotal);
 	}
 
 /* deal function: 
