@@ -23,7 +23,7 @@ var card = function(value, name, suit){
 
 var deck = function(){
     this.names = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K'];
-    this.suits = ['Hearts','Diamonds','Spades','Clubs'];
+    this.suits = ['hearts','diams','spades','clubs'];
     this.values = [11, 2, 3, 4, 5, 6, 7, 8, 9, 10, 10, 10, 10];
     var cards = []; // I think this might need to be in global scope also/instead
     for (var s=0; s<this.suits.length; s++) {
@@ -53,12 +53,12 @@ function makeCardImage(lastCardDealt, handOfPlayerOrDealer){
 		div = document.createElement('div');
 		div.className = 'card';
 		var i;
-		if (lastCardDealt.suit == 'Diamonds'){
-			var ascii_char = '&diams;';
-		} 
-		else {
-			var ascii_char = '&' + lastCardDealt[0].suit.toLowerCase() + ';';
-		}
+		// if (lastCardDealt.suit == 'Diamonds'){ //<-- I don't need this! I just changed the name from 'Diamonds' to 'diams'
+		// 	var ascii_char = '&diams;';
+		// } 
+		// else {
+		var ascii_char = '&' + lastCardDealt[0].suit + ';'; //<-- I changed this from lastCardDealt[0].suit.toLowerCase()
+		// }
 		div.innerHTML = '<span class="number">' + lastCardDealt[0].name + '</span><span class="suit">' + ascii_char + '</span>';
 		handOfPlayerOrDealer.appendChild(div); //this will get appended to whomever's hand ...somehow
 	}
@@ -100,8 +100,8 @@ var cardToPlayer = function() {
 }
 
 var displayPlayerTotal = function() {
-
-		console.log("umm");
+// sum of the values in player's array
+		console.log(displayPlayerTotal);
 	}
 
 /* deal function: 
@@ -169,3 +169,7 @@ var displayPlayerTotal = function() {
 
 	  _?_ are "push" and "winner" functions? wtf should they be?
  */
+
+ //*****************************
+// PLAYER : HIT & STAND
+//******************************
