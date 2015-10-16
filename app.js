@@ -10,13 +10,14 @@ var playerArea = document.getElementById('player-area');
 var dealerArea = document.getElementById('dealer-area');
 var displayPlayerTotal;
 var displayDealerTotal;
-var lastCardGiven;
+var playerTotal = 0;
+var newCard;
 
 
 //*****************************
 // CREATE DECK ARRAY
 //*****************************
-//window onload here
+//window onload here?
 
 var card = function(value, name, suit){
     this.value = value;
@@ -44,44 +45,10 @@ var shuffle = function(deck) {
 
 var theDeck = new deck();
 
-// shuffle(theDeck);
-
-//*****************************
-// CREATE CARDS FOR THE DOM
-//*****************************
-
-// function makeCardImage(lastCardDealt, handOfPlayerOrDealer){
-// 	theDeck = shuffle(theDeck);
-// 	for(var z=0; z<theDeck.length; z++) {
-// 		div = document.createElement('div');
-// 		div.className = 'card';
-// 		var i;
-// 		// if (lastCardDealt.suit == 'Diamonds'){ //<-- I don't need this! I just changed the name from 'Diamonds' to 'diams'
-// 		// 	var ascii_char = '&diams;';
-// 		// } 
-// 		// else {
-// 		var ascii_char = '&' + lastCardDealt[0].suit + ';'; //<-- I changed this from lastCardDealt[0].suit.toLowerCase()
-// 		// }
-// 		div.innerHTML = '<span class="number">' + lastCardDealt[0].name + '</span><span class="suit">' + ascii_char + '</span>';
-// 		handOfPlayerOrDealer.appendChild(div); //this will get appended to whomever's hand ...somehow
-// 	}
-// }
-
-var addCardToDealer = function() {
-	var lengthOfDealerHand = dealerHand.length - 1;
-	div = document.createElement('div');
-	div.className = 'card';
-	var ascii_char = '&' + dealerHand[lengthOfDealerHand].suit + ';'; 
-	div.innerHTML = '<span class="number">' + dealerHand[lengthOfDealerHand].name + '</span><span class="suit">' + ascii_char + '</span>';
-	dealerArea.appendChild(div); 
-}
 
 //*****************************
 // DEAL
 //*****************************
-
- // set bet function:
-
 
 var deal = function() {
 	wallet = 100;
@@ -91,39 +58,41 @@ var deal = function() {
 	shuffle(theDeck);
 
 	wallet = wallet - 5;
-	cardToPlayer();
-	var waitDealer = setTimeout(cardToDealer, 1000);
-	// dealerHand[0].style.backgroundColor="#000"; //<--- make first dealer card invisible; this line doesn't work
-	var waitPlayer = setTimeout(cardToPlayer, 1000);
-	var waitDealer2 = setTimeout(cardToDealer, 1000);
-
+	addCardToPlayer();
+	var waitDealer = setTimeout(addCardToDealer, 700);
+	// dealerHand[0].setAttribute('id', 'first'); // <-- this line doesn't work
+	var waitPlayer = setTimeout(addCardToPlayer, 1400);
+	var waitDealer2 = setTimeout(addCardToDealer, 2100);
 }
 
-var cardToDealer = function() {
-	console.log(dealerHand);
-	dealerHand.push(theDeck.pop());
-	addCardToDealer();
-    // makeCardImage(dealerHand, dealerArea);
-    // for (var p=0; p<dealerHand.length-1; p++) {
-  //   	div = document.createElement('div');
-		// div.className = 'card';
-		// var ascii_char = '&' + dealerHand[p].suit + ';'; 
-		// div.innerHTML = '<span class="number">' + dealerHand[p].name + '</span><span class="suit">' + ascii_char + '</span>';
-		// dealerArea.appendChild(div); //this will get appended to whomever's hand ...somehow
-    // }
+var addCardToDealer = function() {
+    var newCard = theDeck.pop();
+    dealerHand.push(newCard);
+	var lengthOfDealerHand = dealerHand.length - 1;
+	div = document.createElement('div');
+	div.className = 'card';
+	var ascii_char = '&' + dealerHand[lengthOfDealerHand].suit + ';'; 
+	div.innerHTML = '<span class="number">' + dealerHand[lengthOfDealerHand].name + '</span><span class="suit">' + ascii_char + '</span>';
+	dealerArea.appendChild(div); 
 }
 
-var cardToPlayer = function() {
-	console.log(playerHand);
-	playerHand.push(theDeck.pop());
-    // makeCardImage(playerHand, playerArea);
-    for (var p=0; p<playerHand.length - 1; p++) {
-    	div = document.createElement('div');
-		div.className = 'card';
-		var ascii_char = '&' + playerHand[p].suit + ';'; 
-		div.innerHTML = '<span class="number">' + playerHand[p].name + '</span><span class="suit">' + ascii_char + '</span>';
-		playerArea.appendChild(div); //this will get appended to whomever's hand ...somehow
-    }
+var addCardToPlayer = function() {
+	var newCard = theDeck.pop(); 
+	playerHand.push(newCard);
+	var lengthOfPlayerHand = playerHand.length - 1;
+	div = document.createElement('div');
+	div.className = 'card';
+	var ascii_char = '&' + playerHand[lengthOfPlayerHand].suit + ';'; 
+	div.innerHTML = '<span class="number">' + playerHand[lengthOfPlayerHand].name + '</span><span class="suit">' + ascii_char + '</span>';
+	playerArea.appendChild(div); 
+	// debugger;
+	playerTotal = playerTotal + newCard.value; // <-- this doesn't work
+
+	
+	// for (var n=0; n<playerHand.length; n++) {
+	// 	var playerTotal = playerTotal + playerHand[n].value;
+	// 	return playerTotal;
+	// }
 }
 
 var displayPlayerTotal = function() {
@@ -137,13 +106,11 @@ var displayPlayerTotal = function() {
     // }
     // return total;
 
-playerTotal = playerTotal + playerHand[i].value;
-playerDealt++
+	playerTotal = playerTotal + playerHand[i].value;
+	playerDealt++
 
 
 //dealerTotal.innerHTML = dealerCount;
-
-
 
 
 
@@ -160,11 +127,6 @@ playerDealt++
     // 	console.log(totalPlayer);
     // }
 
-    // var sum = playerHand.reduce( //<--- this doesn't work
-    //        function(prev,current){
-    //          return  +(current[1]) + prev;
-    //        }, 0
-    //      );
 // and then get this total to display in the DOM
 }
 
