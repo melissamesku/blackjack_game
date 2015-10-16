@@ -10,6 +10,7 @@ var playerArea = document.getElementById('player-area');
 var dealerArea = document.getElementById('dealer-area');
 var displayPlayerTotal;
 var displayDealerTotal;
+var lastCardGiven;
 
 
 //*****************************
@@ -49,21 +50,30 @@ var theDeck = new deck();
 // CREATE CARDS FOR THE DOM
 //*****************************
 
-function makeCardImage(lastCardDealt, handOfPlayerOrDealer){
-	theDeck = shuffle(theDeck);
-	for(var z=0; z<theDeck.length; z++) {
-		div = document.createElement('div');
-		div.className = 'card';
-		var i;
-		// if (lastCardDealt.suit == 'Diamonds'){ //<-- I don't need this! I just changed the name from 'Diamonds' to 'diams'
-		// 	var ascii_char = '&diams;';
-		// } 
-		// else {
-		var ascii_char = '&' + lastCardDealt[0].suit + ';'; //<-- I changed this from lastCardDealt[0].suit.toLowerCase()
-		// }
-		div.innerHTML = '<span class="number">' + lastCardDealt[0].name + '</span><span class="suit">' + ascii_char + '</span>';
-		handOfPlayerOrDealer.appendChild(div); //this will get appended to whomever's hand ...somehow
-	}
+// function makeCardImage(lastCardDealt, handOfPlayerOrDealer){
+// 	theDeck = shuffle(theDeck);
+// 	for(var z=0; z<theDeck.length; z++) {
+// 		div = document.createElement('div');
+// 		div.className = 'card';
+// 		var i;
+// 		// if (lastCardDealt.suit == 'Diamonds'){ //<-- I don't need this! I just changed the name from 'Diamonds' to 'diams'
+// 		// 	var ascii_char = '&diams;';
+// 		// } 
+// 		// else {
+// 		var ascii_char = '&' + lastCardDealt[0].suit + ';'; //<-- I changed this from lastCardDealt[0].suit.toLowerCase()
+// 		// }
+// 		div.innerHTML = '<span class="number">' + lastCardDealt[0].name + '</span><span class="suit">' + ascii_char + '</span>';
+// 		handOfPlayerOrDealer.appendChild(div); //this will get appended to whomever's hand ...somehow
+// 	}
+// }
+
+var addCardToDealer = function() {
+	var lengthOfDealerHand = dealerHand.length - 1;
+	div = document.createElement('div');
+	div.className = 'card';
+	var ascii_char = '&' + dealerHand[lengthOfDealerHand].suit + ';'; 
+	div.innerHTML = '<span class="number">' + dealerHand[lengthOfDealerHand].name + '</span><span class="suit">' + ascii_char + '</span>';
+	dealerArea.appendChild(div); 
 }
 
 //*****************************
@@ -71,7 +81,7 @@ function makeCardImage(lastCardDealt, handOfPlayerOrDealer){
 //*****************************
 
  // set bet function:
- 
+
 
 var deal = function() {
 	wallet = 100;
@@ -86,27 +96,77 @@ var deal = function() {
 	// dealerHand[0].style.backgroundColor="#000"; //<--- make first dealer card invisible; this line doesn't work
 	var waitPlayer = setTimeout(cardToPlayer, 1000);
 	var waitDealer2 = setTimeout(cardToDealer, 1000);
-	//display player total
+
 }
 
 var cardToDealer = function() {
 	console.log(dealerHand);
 	dealerHand.push(theDeck.pop());
-    makeCardImage(dealerHand, dealerArea);
+	addCardToDealer();
+    // makeCardImage(dealerHand, dealerArea);
+    // for (var p=0; p<dealerHand.length-1; p++) {
+  //   	div = document.createElement('div');
+		// div.className = 'card';
+		// var ascii_char = '&' + dealerHand[p].suit + ';'; 
+		// div.innerHTML = '<span class="number">' + dealerHand[p].name + '</span><span class="suit">' + ascii_char + '</span>';
+		// dealerArea.appendChild(div); //this will get appended to whomever's hand ...somehow
+    // }
 }
 
 var cardToPlayer = function() {
 	console.log(playerHand);
 	playerHand.push(theDeck.pop());
-    makeCardImage(playerHand, playerArea);
+    // makeCardImage(playerHand, playerArea);
+    for (var p=0; p<playerHand.length - 1; p++) {
+    	div = document.createElement('div');
+		div.className = 'card';
+		var ascii_char = '&' + playerHand[p].suit + ';'; 
+		div.innerHTML = '<span class="number">' + playerHand[p].name + '</span><span class="suit">' + ascii_char + '</span>';
+		playerArea.appendChild(div); //this will get appended to whomever's hand ...somehow
+    }
 }
 
 var displayPlayerTotal = function() {
-// sum of the values in player's array
-    var playerHand = [];
-    console.log(eval(playerHand.join('+')));
-		// console.log(displayPlayerTotal);
-	}
+// sum of the values in player's array. Sounds simple enough, huh? LOL...
+    // total = playerHand[0].value + playerHand[1].value + playerHand[2].value + playerHand[3].value + playerHand[4].value + playerHand[5].value + playerHand[6].value; //<--- this works, but it's hard-coded :)
+    // console.log(total);
+
+    // var total;
+    // for (var idx = 0; idx < playerHand.length; idx++) {
+    //     total += playerHand[idx];
+    // }
+    // return total;
+
+playerTotal = playerTotal + playerHand[i].value;
+playerDealt++
+
+
+//dealerTotal.innerHTML = dealerCount;
+
+
+
+
+
+// dealercount = dealercount + dealerHand[i].value;
+// if (dealerHand[i].name === 'A') {
+// 	dealerAces++
+// }
+
+
+    // var value = playerHand.value; //<--- this still doesn't work
+    // var totalPlayer;
+    // for (var y=0; y<playerHand.length; y++) {
+    // 	totalPlayer += value;
+    // 	console.log(totalPlayer);
+    // }
+
+    // var sum = playerHand.reduce( //<--- this doesn't work
+    //        function(prev,current){
+    //          return  +(current[1]) + prev;
+    //        }, 0
+    //      );
+// and then get this total to display in the DOM
+}
 
 /* deal function: 
 	  subtract money from the player's wallet
