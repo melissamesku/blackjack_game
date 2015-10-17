@@ -7,22 +7,24 @@
 </head>
 <body>
 	<div id="container">
-		<div class="card-container" id="dealer-area">
-			<div class="card-container-text">
+		<section class="card-container" id="dealer-area">
+			<div id="dealertext">
 				<p>Dealer's hand: </p>
 			</div>
-		</div>
-		<div class="card-container" id="player-area">
-			<p>Player's hand: 21</p>
-		</div>
+		</section>
+		<section class="card-container" id="player-area">
+			<div id="playertext">
+				<p>Player's hand: </p>
+			</div>
+		</section>
 		<div class="button-container">
 			<button onclick=deal()>Deal</button>
 			<button onclick=>Hit</button>
 			<button onclick=>Stand</button>
 			<br/>
 			<br/>
-			<button onclick="">Change Bet</button>
-			<input id="bet-amount"></input>
+			<!-- <button onclick="">Change Bet</button>
+			<input id="bet-amount"></input> -->
 			<p>minimum bet: $5</p>
 			<p id="walletAmount"></p>
 		</div>
