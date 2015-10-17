@@ -81,6 +81,7 @@ var addCardToDealer = function() {
 	dealerArea.appendChild(div); 
 	dealerTotal = dealerTotal + newCard.value; 
 	var wait = setTimeout(pause, 2200);
+	checkForBlackjack();
 }
 
 var addCardToPlayer = function() {
@@ -94,6 +95,7 @@ var addCardToPlayer = function() {
 	playerArea.appendChild(div); 
 	playerTotal = playerTotal + newCard.value;
 	var wait = setTimeout(pause, 2200);
+	checkForBlackjack();
 	 // displayTotal = getElementById('playertext'); /<-- this doesn't work yet...
 	 // p.innerHTML = playerTotal;
 	 // playertext.appendChild(p);
@@ -109,9 +111,9 @@ var addCardToPlayer = function() {
 }
 
 var pause = function() {
-    console.log('wallet has ' + wallet);
-    console.log('player has ' + playerTotal + ', dealer has ' + dealerTotal);
-    checkForBlackjack();
+    console.log('pause. wallet has $' + wallet);
+    console.log('pause. player has ' + playerTotal + ', dealer has ' + dealerTotal);
+    // checkForBlackjack();
 }
 
 /* deal function: 
@@ -143,32 +145,42 @@ var pause = function() {
 //*****************************
 var checkForBlackjack = function() {
 	if ((dealerTotal == playerTotal) && (dealerTotal == 21)) {
-		return push;
-	    console.log("push");
+		return push();
+	    console.log("checkforblackjack function: push on blackjack");
 	}
 	else if (playerTotal == 21) {
-		p = document.createElement('p'); //<---this works but it makes a whole new p tag
-		p.innerHTML = 'You got blackjack! + $7.50';
-		playerArea.appendChild(p);
-	  	console.log('player got blackjack');
-	  	wallet = wallet + 7.50;
+		// p = document.createElement('p'); //<---this works but it makes a whole new p tag
+		// p.innerHTML = 'You got blackjack! + $7.50';
+		// playerArea.appendChild(p);
+	  	return win();
+	  	console.log('checkforblackjack function: player got blackjack');
 	}
 	else if (dealerTotal == 21) {
 		p = document.createElement('p'); //<---this works but it makes a whole new p tag
 		p.innerHTML = 'Dealer got blackjack! You lose.';
 		dealerArea.appendChild(p);
-	  	console.log('dealer got blackjack');
+	  	console.log('checkforblackjack function: dealer got blackjack');
 	} 
 	else if ((dealerTotal < 21) && (playerTotal > 21)) {
 		p = document.createElement('p'); //<---this works but it makes a whole new p tag
 		p.innerHTML = 'you went bust';
 		playerArea.appendChild(p);
-		console.log('you busted');
+		console.log('checkforblackjack function: you busted');
 	}
-}
-
-var win = function() {
-	console.log('player won!')
+	else if ((dealerTotal == playerTotal) && (dealerTotal >= 17)) { //<-- this is a repeat of what's in stand function
+	    return push();
+		console.log('checkforblackjack function: that is a push');
+	}
+	else if ((dealerTotal >= 17) && (playerTotal > dealerTotal)) { //<-- this is a repeat of what's in stand function
+		// return win();
+		console.log('checkforblackjack function: you win, dude');
+		wallet = wallet + 5;
+	}
+	else if ((dealerTotal > 21) && (playerTotal <= 21)) { 
+		return win();
+		console.log('checkforblackjack function: dealer busted, you win!');
+		wallet = wallet + 5;
+	}
 }
 
 var hit = function() {
@@ -179,40 +191,67 @@ var hit = function() {
 		addCardToPlayer();
 		pause();
 		console.log('added card to player. Player total is now ' + playerTotal);
-		checkForBlackjack();
 	}
+	// pause();
+	// checkForBlackjack();
 }
 
 var stand = function() {
 	//dealer's card has to turn over now
-	if ((dealerTotal === playerTotal) && (dealerTotal >= 17)) {
-		// return push();
+	if ((dealerTotal === playerTotal) && (dealerTotal >= 17)) { //<-- this is a repeat of what's in blackjack function
+		return push();
 		console.log('that is a push');
 	}
-	else if (playerTotal > dealerTotal) {
-		// return win();
+	else if ((dealerTotal >= 17) && (playerTotal > dealerTotal)) { //<-- this is a repeat of what's in blackjack function
+		return win();
 		console.log('you win, dude');
 	}
-	else if (dealerTotal < 17) { //this condition is not working yet for some reason, and this will need to be a loop
-		addCardToDealer();
-		console.log('dealer gets another card');
+	else if (dealerTotal < 17) { //this condition is not working yet for some reason, and might need to be a loop
+		for (var d=0; dealerTotal < 22; d++){
+			addCardToDealer();
+			console.log('dealer gets another card');
+			pause();
+		}
 	} 
+	else if ((dealerTotal > playerTotal) && (dealerTotal >= 17)) { 
+		return lose();
+		console.log('stand function: you lost');
+	}
+	checkForBlackjack();
 }
 
 var push = function() {
-	p = document.createElement('p'); //<---this works but it makes a whole new p tag
+	p = document.createElement('p'); //<--- this is inline, needs to be on separate line
 	p.className = 'player-text';
 	p.innerHTML = 'you got a push';
 	playerArea.appendChild(p);
 	wallet = wallet + 5;
+	// console.log('push function: that is a push')
 }
 
 var bust = function() {
-	// p = document.createElement('p'); //<---this works but it makes a whole new p tag
-	// p.className = 'player-text';
-	// p.innerHTML = 'you busted';
-	// playerArea.appendChild(p);
-	// console.log('you busted')
+	p = document.createElement('p'); //<---this works but it makes a whole new p tag
+	p.className = 'player-text';
+	p.innerHTML = 'You totally busted';
+	playerArea.appendChild(p);
+	// console.log('bust function: you busted')
+}
+
+var win = function() {
+	// console.log('win function: player won!')
+	p = document.createElement('p'); //<---this p tag seems to be inline; it needs to be put on its own line & this is happening twice
+	p.className = 'player-text';
+	p.innerHTML = 'You win!';
+	playerArea.appendChild(p);
+	wallet = wallet + 5;
+}
+
+var lose = function() {
+	// console.log('win function: player won!')
+	p = document.createElement('p'); //<---this p tag seems to be inline; it needs to be put on its own line
+	p.className = 'player-text';
+	p.innerHTML = 'You lose!';
+	playerArea.appendChild(p);
 }
 
 // var checkForWin = function {
