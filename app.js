@@ -11,7 +11,7 @@ var dealerArea = document.getElementById('dealer-area');
 var displayPlayerTotal;
 var displayDealerTotal;
 var playerTotal = 0;
-var newCard;
+var dealerTotal = 0;
 
 
 //*****************************
@@ -63,6 +63,10 @@ var deal = function() {
 	// dealerHand[0].setAttribute('id', 'first'); // <-- this line doesn't work
 	var waitPlayer = setTimeout(addCardToPlayer, 1400);
 	var waitDealer2 = setTimeout(addCardToDealer, 2100);
+	checkForBlackjack();
+	// if (playerTotal < 21) {
+	// 	console.log('player can hit now')
+	// }
 }
 
 var addCardToDealer = function() {
@@ -74,6 +78,7 @@ var addCardToDealer = function() {
 	var ascii_char = '&' + dealerHand[lengthOfDealerHand].suit + ';'; 
 	div.innerHTML = '<span class="number">' + dealerHand[lengthOfDealerHand].name + '</span><span class="suit">' + ascii_char + '</span>';
 	dealerArea.appendChild(div); 
+	dealerTotal = dealerTotal + newCard.value; 
 }
 
 var addCardToPlayer = function() {
@@ -85,49 +90,19 @@ var addCardToPlayer = function() {
 	var ascii_char = '&' + playerHand[lengthOfPlayerHand].suit + ';'; 
 	div.innerHTML = '<span class="number">' + playerHand[lengthOfPlayerHand].name + '</span><span class="suit">' + ascii_char + '</span>';
 	playerArea.appendChild(div); 
-	// debugger;
-	playerTotal = playerTotal + newCard.value; // <-- this doesn't work
-
-	
-	// for (var n=0; n<playerHand.length; n++) {
-	// 	var playerTotal = playerTotal + playerHand[n].value;
-	// 	return playerTotal;
-	// }
-}
-
-var displayPlayerTotal = function() {
-// sum of the values in player's array. Sounds simple enough, huh? LOL...
-    // total = playerHand[0].value + playerHand[1].value + playerHand[2].value + playerHand[3].value + playerHand[4].value + playerHand[5].value + playerHand[6].value; //<--- this works, but it's hard-coded :)
-    // console.log(total);
-
-    // var total;
-    // for (var idx = 0; idx < playerHand.length; idx++) {
-    //     total += playerHand[idx];
-    // }
-    // return total;
-
-	playerTotal = playerTotal + playerHand[i].value;
-	playerDealt++
+	playerTotal = playerTotal + newCard.value;
+	 // displayTotal = getElementById('playertext'); /<-- this doesn't work yet...
+	 // p.innerHTML = playerTotal;
+	 // playertext.appendChild(p);
+	 
+	 // p = document.createElement('p'); //<---this works but it makes a whole new p tag
+	 // p.className = 'player-text';
+	 // p.innerHTML = 'player total: ' + playerTotal;
+	 // playerArea.appendChild(p);
 
 
-//dealerTotal.innerHTML = dealerCount;
-
-
-
-// dealercount = dealercount + dealerHand[i].value;
-// if (dealerHand[i].name === 'A') {
-// 	dealerAces++
-// }
-
-
-    // var value = playerHand.value; //<--- this still doesn't work
-    // var totalPlayer;
-    // for (var y=0; y<playerHand.length; y++) {
-    // 	totalPlayer += value;
-    // 	console.log(totalPlayer);
-    // }
-
-// and then get this total to display in the DOM
+	// playerDealt++
+	// playerAces
 }
 
 /* deal function: 
@@ -157,7 +132,32 @@ var displayPlayerTotal = function() {
 //*****************************
 // PLAYER'S TURN
 //*****************************
+var checkForBlackjack = function() {
+	if ((dealerTotal == playerTotal) && (dealerTotal <= 21)) {
+		// return push;
+	    console.log("push");
+	}
+	else if (playerTotal == 21) {
+	  	console.log('player got blackjack');
+	  	// return ---player got blackjack
+	  	// player win $$ add ___betAmount * 1.5x___ to wallet
+	  	// deal button is on again
+	}
+	else if (dealerTotal == 21) {
+	  	console.log('dealer got blackjack');
+	    // return ---dealer got blackjack
+	    // player lose $$, subtract ___betAmount___ from wallet
+	    // deal button is on again
+	} 
+}
 
+var win = function() {
+	console.log('player won!')
+}
+
+// var checkForWin = function {
+// 	if 
+// }
 
 /* checkForWin function
 	  // First, check for blackjacks
