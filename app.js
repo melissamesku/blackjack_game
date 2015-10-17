@@ -51,7 +51,6 @@ var theDeck = new deck();
 //*****************************
 
 var deal = function() {
-	wallet = 100;
 	playerHand = [];
 	dealerHand = [];
 	cards = [];
@@ -61,13 +60,20 @@ var deal = function() {
 	addCardToPlayer();
 	var waitDealer = setTimeout(addCardToDealer, 700);
 	// dealerHand[0].setAttribute('id', 'first'); // <-- this line doesn't work
+	// need to somehow remove nth-child from dealer's card
 	var waitPlayer = setTimeout(addCardToPlayer, 1400);
 	var waitDealer2 = setTimeout(addCardToDealer, 2100);
-	checkForBlackjack();
+	var waitTotals = setTimeout(pause, 2200);
 	// if (playerTotal < 21) {
 	// 	console.log('player can hit now')
 	// }
 }
+
+var pause = function(){
+	    console.log('wallet has ' + wallet);
+	    console.log('player has ' + playerTotal + ', dealer has ' + dealerTotal);
+	    checkForBlackjack();
+	}
 
 var addCardToDealer = function() {
     var newCard = theDeck.pop();
@@ -133,7 +139,7 @@ var addCardToPlayer = function() {
 // PLAYER'S TURN
 //*****************************
 var checkForBlackjack = function() {
-	if ((dealerTotal == playerTotal) && (dealerTotal <= 21)) {
+	if ((dealerTotal == playerTotal) && (dealerTotal == 21)) {
 		// return push;
 	    console.log("push");
 	}
@@ -149,10 +155,19 @@ var checkForBlackjack = function() {
 	    // player lose $$, subtract ___betAmount___ from wallet
 	    // deal button is on again
 	} 
+	else {
+		console.log('no winner');
+	}
 }
 
 var win = function() {
 	console.log('player won!')
+}
+
+var hit = function() {
+	if (playerTotal <= 20) {
+		addCardToPlayer();
+	}
 }
 
 // var checkForWin = function {
