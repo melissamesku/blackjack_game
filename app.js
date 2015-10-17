@@ -143,27 +143,27 @@ var pause = function() {
 //*****************************
 var checkForBlackjack = function() {
 	if ((dealerTotal == playerTotal) && (dealerTotal == 21)) {
-		// return push;
+		return push;
 	    console.log("push");
 	}
 	else if (playerTotal == 21) {
+		p = document.createElement('p'); //<---this works but it makes a whole new p tag
+		p.innerHTML = 'You got blackjack! + $7.50';
+		playerArea.appendChild(p);
 	  	console.log('player got blackjack');
-	  	// return ---player got blackjack
-	  	// player win $$ add ___betAmount * 1.5x___ to wallet
-	  	// deal button is on again
+	  	wallet = wallet + 7.50;
 	}
 	else if (dealerTotal == 21) {
+		p = document.createElement('p'); //<---this works but it makes a whole new p tag
+		p.innerHTML = 'Dealer got blackjack! You lose.';
+		dealerArea.appendChild(p);
 	  	console.log('dealer got blackjack');
-	    // return ---dealer got blackjack
-	    // player lose $$, subtract ___betAmount___ from wallet
-	    // deal button is on again
 	} 
 	else if ((dealerTotal < 21) && (playerTotal > 21)) {
 		p = document.createElement('p'); //<---this works but it makes a whole new p tag
-		// p.className = 'player-text';
 		p.innerHTML = 'you went bust';
 		playerArea.appendChild(p);
-		console.log('you busted')
+		console.log('you busted');
 	}
 }
 
@@ -172,12 +172,31 @@ var win = function() {
 }
 
 var hit = function() {
+	if (playerTotal == 21) {
+		win();
+	}
 	if (playerTotal <= 20) {
 		addCardToPlayer();
 		pause();
 		console.log('added card to player. Player total is now ' + playerTotal);
-		// checkForBlackjack();
+		checkForBlackjack();
 	}
+}
+
+var stand = function() {
+	//dealer's card has to turn over now
+	if ((dealerTotal === playerTotal) && (dealerTotal >= 17)) {
+		// return push();
+		console.log('that is a push');
+	}
+	else if (playerTotal > dealerTotal) {
+		// return win();
+		console.log('you win, dude');
+	}
+	else if (dealerTotal < 17) { //this condition is not working yet for some reason, and this will need to be a loop
+		addCardToDealer();
+		console.log('dealer gets another card');
+	} 
 }
 
 var push = function() {
