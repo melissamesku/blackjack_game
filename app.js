@@ -63,17 +63,12 @@ var deal = function() {
 	// need to somehow remove nth-child from dealer's card
 	var waitPlayer = setTimeout(addCardToPlayer, 1400);
 	var waitDealer2 = setTimeout(addCardToDealer, 2100);
-	var waitTotals = setTimeout(pause, 2200);
+	// var wait = setTimeout(pause, 2200);
+
 	// if (playerTotal < 21) {
 	// 	console.log('player can hit now')
 	// }
 }
-
-var pause = function(){
-	    console.log('wallet has ' + wallet);
-	    console.log('player has ' + playerTotal + ', dealer has ' + dealerTotal);
-	    checkForBlackjack();
-	}
 
 var addCardToDealer = function() {
     var newCard = theDeck.pop();
@@ -85,6 +80,7 @@ var addCardToDealer = function() {
 	div.innerHTML = '<span class="number">' + dealerHand[lengthOfDealerHand].name + '</span><span class="suit">' + ascii_char + '</span>';
 	dealerArea.appendChild(div); 
 	dealerTotal = dealerTotal + newCard.value; 
+	var wait = setTimeout(pause, 2200);
 }
 
 var addCardToPlayer = function() {
@@ -97,6 +93,7 @@ var addCardToPlayer = function() {
 	div.innerHTML = '<span class="number">' + playerHand[lengthOfPlayerHand].name + '</span><span class="suit">' + ascii_char + '</span>';
 	playerArea.appendChild(div); 
 	playerTotal = playerTotal + newCard.value;
+	var wait = setTimeout(pause, 2200);
 	 // displayTotal = getElementById('playertext'); /<-- this doesn't work yet...
 	 // p.innerHTML = playerTotal;
 	 // playertext.appendChild(p);
@@ -109,6 +106,12 @@ var addCardToPlayer = function() {
 
 	// playerDealt++
 	// playerAces
+}
+
+var pause = function() {
+    console.log('wallet has ' + wallet);
+    console.log('player has ' + playerTotal + ', dealer has ' + dealerTotal);
+    checkForBlackjack();
 }
 
 /* deal function: 
@@ -155,8 +158,12 @@ var checkForBlackjack = function() {
 	    // player lose $$, subtract ___betAmount___ from wallet
 	    // deal button is on again
 	} 
-	else {
-		console.log('no winner');
+	else if ((dealerTotal < 21) && (playerTotal > 21)) {
+		p = document.createElement('p'); //<---this works but it makes a whole new p tag
+		// p.className = 'player-text';
+		p.innerHTML = 'you went bust';
+		playerArea.appendChild(p);
+		console.log('you busted')
 	}
 }
 
@@ -167,7 +174,26 @@ var win = function() {
 var hit = function() {
 	if (playerTotal <= 20) {
 		addCardToPlayer();
+		pause();
+		console.log('added card to player. Player total is now ' + playerTotal);
+		// checkForBlackjack();
 	}
+}
+
+var push = function() {
+	p = document.createElement('p'); //<---this works but it makes a whole new p tag
+	p.className = 'player-text';
+	p.innerHTML = 'you got a push';
+	playerArea.appendChild(p);
+	wallet = wallet + 5;
+}
+
+var bust = function() {
+	// p = document.createElement('p'); //<---this works but it makes a whole new p tag
+	// p.className = 'player-text';
+	// p.innerHTML = 'you busted';
+	// playerArea.appendChild(p);
+	// console.log('you busted')
 }
 
 // var checkForWin = function {
