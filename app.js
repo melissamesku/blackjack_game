@@ -5,6 +5,7 @@
    BUG: The dealerTotal, when there's a dealerAce, is off. It gives too many cards to the dealer when stand() executes. 
    Example: the dealer was given 3,A,K,2,6,5. The dealer should not be given the last card (5) because he already had a total of
    22 after dealerAces subtracts 10. Oddly, playerAces seems to work fine. Example: player got 3,A,K and won with that hand.
+   Oddly, other situations don't print twice. I don't know why just this one thing (the player natural blackjack) prints twice
 
    BUG: I need to change it so the checkForBlackjack function isn't called every time a card goes down DURING THE INITIAL DEAL, 
    because it is printing a win twice, which also doubles the amount that goes in the wallet.
@@ -74,8 +75,27 @@ var deal = function() {
 	//     elementsToRemove[i].parentNode.removeChild(elementsToRemove[i]);
 	// }
 
+	// var removeDealerArea = document.getElementById('dealer-area');
+	// removeDealerArea.remove();
+	// var removePlayerArea = document.getElementById('player-area');
+	// removePlayerArea.remove();
+	// var addDealerArea = document.createElement('div').setAttribute("id", "dealer-area");
+	// var addPlayerArea = document.createElement('div').setAttribute("id", "player-area");
+     
+	// var removeCards = document.getElementsByClassName("card");
+	// removeCards[0].innerHTML = '';      
+
+
+
+	// var elements = container.getElementsByClassName("card");
+	// while (elements[0]) {
+	// 	elements[0].parentNode.removeChild(elements[0]);
+	// }
+
 	playerHand = [];
 	dealerHand = [];
+	playerTotal = 0;
+	dealerTotal = 0;
 	cards = [];
 	shuffle(theDeck);
 
@@ -170,11 +190,12 @@ var pause = function() {
 
 
 //*****************************
-// PLAYER'S TURN
-//*****************************
+// WIN CONDITIONS
+//******************************
 var checkForBlackjack = function() {
 	if ((dealerTotal == playerTotal) && (dealerTotal == 21)) {
 		p = document.createElement('p');
+		p.className = 'status';
 		p.innerHTML = 'Damn! You both got Blackjack!';
 		dealerArea.appendChild(p);
 		return pushed();
@@ -185,14 +206,16 @@ var checkForBlackjack = function() {
 	  	// console.log('checkforblackjack function: player got blackjack');
 	}
 	else if ((dealerTotal == 21) && (dealerHand.length == 2)) {
-		p = document.createElement('p'); //<---this works but it makes a whole new p tag
+		p = document.createElement('p'); 
+		p.className = 'status';
 		p.innerHTML = 'Dealer got blackjack';
 		dealerArea.appendChild(p);
 	  	// console.log('checkforblackjack function: dealer got blackjack');
 	  	return lose();
 	} 
 	else if (dealerTotal == 21) {
-		p = document.createElement('p'); //<---this works but it makes a whole new p tag
+		p = document.createElement('p'); 
+		p.className = 'status';
 		p.innerHTML = 'Dealer got 21';
 		dealerArea.appendChild(p);
 	  	// console.log('checkforblackjack function: dealer got blackjack');
@@ -254,14 +277,16 @@ var stand = function() {
 		// console.log('checkforblackjack function: you win, dude');
 	}
 	else if ((dealerTotal >= 17 && dealerTotal < 21) && (playerTotal < dealerTotal)) { //<-- this is a repeat of what's in stand function
-		p = document.createElement('p'); //<---this works but it makes a whole new p tag
+		p = document.createElement('p'); 
+	    p.className = 'status';
 		p.innerHTML = 'Dealer wins';
 		dealerArea.appendChild(p);
 		return lose();
 		// console.log('checkforblackjack function: you win, dude');
 	}
 	else if ((dealerTotal > 21) && (playerTotal <= 21)) { 
-		p = document.createElement('p'); //<---this works but it makes a whole new p tag
+		p = document.createElement('p'); 
+		p.className = 'status';
 		p.innerHTML = 'Dealer busted';
 		dealerArea.appendChild(p);
 		return win();
@@ -278,7 +303,7 @@ var stand = function() {
 
 var pushed = function() {
 	p = document.createElement('p'); //<--- this is inline, needs to be on separate line
-	// p.className = 'player-text';
+	p.className = 'status';
 	p.innerHTML = 'you got a push!';
 	playerArea.appendChild(p);
 	wallet = wallet + 5;
@@ -286,8 +311,8 @@ var pushed = function() {
 }
 
 var bust = function() {
-	p = document.createElement('p'); //<---this works but it makes a whole new p tag
-	// p.className = 'player-text';
+	p = document.createElement('p');
+	p.className = 'status';
 	p.innerHTML = 'You busted!';
 	playerArea.appendChild(p);
 	// console.log('bust function: you busted')
@@ -295,6 +320,7 @@ var bust = function() {
 
 var playerNaturalBlackjack = function() {
 	p = document.createElement('p');
+	p.className = 'status';
 	p.innerHTML = "You got blackjack!<br/>You win 1.5x your bet";
 	playerArea.appendChild(p);
 	wallet = wallet + 7.50;
@@ -303,7 +329,7 @@ var playerNaturalBlackjack = function() {
 
 var win = function() {
 	p = document.createElement('p'); //<---this p tag is inline ---- it needs its own line --- this is happening twice
-	// p.className = 'player-text';
+	p.className = 'status';
 	p.innerHTML = 'You win!';
 	playerArea.appendChild(p);
 	wallet = wallet + 5;
@@ -311,11 +337,11 @@ var win = function() {
 }
 
 var lose = function() {
-	// console.log('win function: player won!')
 	p = document.createElement('p'); // //<---this p tag is inline ---- it needs its own line
-	// p.className = 'player-text';
+	p.className = 'status';
 	p.innerHTML = 'You lose!';
 	playerArea.appendChild(p);
+	// console.log('win function: player won!')
 }
 
 // var checkForWin = function {
@@ -359,6 +385,3 @@ var lose = function() {
 	  _?_ are "push" and "winner" functions? wtf should they be?
  */
 
- //*****************************
-// PLAYER : HIT & STAND
-//******************************
