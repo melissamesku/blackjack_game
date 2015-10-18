@@ -1,10 +1,13 @@
-/* To do: move some of the winning checks to the stand function, because we should be checking for all these win conditions
-   before "stand" happens. This way, the revealed black card makes sense; otherwise you're losing to the dealer and
-   you can't even see why
+/* TO DO
 
    Make "Deal" clear the cards off the table.
 
-   If you get a natural blackjack on deal, it says "You win!" twice
+   BUG: The dealerTotal, when there's a dealerAce, is off. It gives too many cards to the dealer when stand() executes. 
+   Example: the dealer was given 3,A,K,2,6,5. The dealer should not be given the last card (5) because he already had a total of
+   22 after dealerAces subtracts 10. Oddly, playerAces seems to work fine. Example: player got 3,A,K and won with that hand.
+
+   BUG: I need to change it so the checkForBlackjack function isn't called every time a card goes down DURING THE INITIAL DEAL, 
+   because it is printing a win twice, which also doubles the amount that goes in the wallet.
 */
 
 //*****************************
@@ -181,18 +184,25 @@ var checkForBlackjack = function() {
 	  	return playerNaturalBlackjack();
 	  	// console.log('checkforblackjack function: player got blackjack');
 	}
-	else if (dealerTotal == 21) {
+	else if ((dealerTotal == 21) && (dealerHand.length == 2)) {
 		p = document.createElement('p'); //<---this works but it makes a whole new p tag
-		p.innerHTML = 'Dealer got blackjack! ';
+		p.innerHTML = 'Dealer got blackjack';
 		dealerArea.appendChild(p);
 	  	// console.log('checkforblackjack function: dealer got blackjack');
 	  	return lose();
 	} 
-	else if ((playerAces == 1) && (playerTotal > 21)) {
-		playerTotal - 10;
+	else if (dealerTotal == 21) {
+		p = document.createElement('p'); //<---this works but it makes a whole new p tag
+		p.innerHTML = 'Dealer got 21';
+		dealerArea.appendChild(p);
+	  	// console.log('checkforblackjack function: dealer got blackjack');
+	  	return lose();
+	} 
+	else if ((playerAces >= 1) && (playerTotal > 21)) {
+		playerTotal = playerTotal - 10;
 	}
-	else if ((dealerAces == 1) && (dealerTotal > 21)) {
-		dealerTotal - 10;
+	else if ((dealerAces >= 1) && (dealerTotal > 21)) {
+		dealerTotal = dealerTotal - 10;
 	}
 	else if (playerTotal > 21) {
 		return bust();
@@ -205,7 +215,7 @@ var hit = function() {
 	}
 	if (playerTotal <= 20) {
 		addCardToPlayer();
-		pause();
+		// pause();
 		// console.log('added card to player. Player total is now ' + playerTotal);
 	}
 	// pause();
@@ -226,7 +236,7 @@ var stand = function() {
 		for (var d=0; dealerTotal < 17; d++){
 			addCardToDealer();
 			console.log('dealer gets another card');
-			pause();
+			// pause();
 		}
 	} 
 	// else if ((dealerTotal > playerTotal) && (dealerTotal >= 17)) { 
@@ -284,8 +294,7 @@ var bust = function() {
 }
 
 var playerNaturalBlackjack = function() {
-	p = document.createElement('p'); //<---this p tag is inline ---- it needs its own line --- this is happening twice
-	// p.className = 'player-text';
+	p = document.createElement('p');
 	p.innerHTML = "You got blackjack!<br/>You win 1.5x your bet";
 	playerArea.appendChild(p);
 	wallet = wallet + 7.50;
