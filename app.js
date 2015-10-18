@@ -2,13 +2,12 @@
 
    Disable buttons when they shouldn't be active.
 
-   Fix black dealer card
-
    BUG: The dealerTotal, when there's a dealerAce, is off. It gives too many cards to the dealer when stand() executes. 
    Example: the dealer was given 3,A,K,2,6,5. The dealer should not be given the last card (5) because he already had a total of
    22 after dealerAces subtracts 10. Oddly, playerAces seems to work fine. Example: player got 3,A,K and won with that hand. 
    Player natural blackjack printed twice. Oddly, other situations don't print twice. I don't know why just this one thing 
    (the player natural blackjack) prints twice. 
+   UPDATE: I think this is fixed; I need to keep playing to test it
 
    BUG: I need to change it so the checkForBlackjack function isn't called every time a card goes down DURING THE INITIAL DEAL, 
    because it is printing a win twice, which also doubles the amount that goes in the wallet.
@@ -37,7 +36,6 @@ var dealerAces = 0;
 //*****************************
 // CREATE DECK ARRAY
 //*****************************
-//window onload here?
 
 var card = function(value, name, suit){
     this.value = value;
@@ -71,27 +69,6 @@ var theDeck = new deck();
 //*****************************
 
 var deal = function() {
-	// var removeCards = document.getElementsByClassName("cards");
-	// var elementsToRemove = [];
-	// for (var i = 0; i <removeCards.length; i++) {
-	//     elementsToRemove.push(removeCards[i]);
-	// }
-	// for(var i = 0; i < elementsToRemove.length; i++) {
-	//     elementsToRemove[i].parentNode.removeChild(elementsToRemove[i]);
-	// }
-
-	// var removeDealerArea = document.getElementById('dealer-area');
-	// removeDealerArea.remove();
-	// var removePlayerArea = document.getElementById('player-area');
-	// removePlayerArea.remove();
-	// var addDealerArea = document.createElement('div').setAttribute("id", "dealer-area");
-	// var addPlayerArea = document.createElement('div').setAttribute("id", "player-area");
-     
-	// var removeCards = document.getElementsByClassName("card");
-	// removeCards[0].innerHTML = '';      
-
-
-
 	var removeCards = container.getElementsByClassName("card");
 	while (removeCards[0]) {
 		removeCards[0].parentNode.removeChild(removeCards[0]);
@@ -100,8 +77,6 @@ var deal = function() {
 	while (removeP[0]) {
 		removeP[0].parentNode.removeChild(removeP[0]);
 	}
-
-
 	playerHand = [];
 	dealerHand = [];
 	playerTotal = 0;
@@ -110,19 +85,11 @@ var deal = function() {
 	dealerAces = 0;
 	cards = [];
 	shuffle(theDeck);
-
 	wallet = wallet - 5;
 	addCardToPlayer();
 	var waitDealer = setTimeout(addCardToDealer, 700);
-	// dealerHand[0].setAttribute('id', 'first'); // <-- this line doesn't work
-	// need to somehow remove nth-child from dealer's card
 	var waitPlayer = setTimeout(addCardToPlayer, 1400);
 	var waitDealer2 = setTimeout(addCardToDealer, 2100);
-	// var wait = setTimeout(pause, 2200);
-
-	// if (playerTotal < 21) {
-	// 	console.log('player can hit now')
-	// }
 }
 
 var addCardToDealer = function() {
@@ -158,49 +125,12 @@ var addCardToPlayer = function() {
 	}
 	var wait = setTimeout(pause, 2200);
 	checkForBlackjack();
-	 // displayTotal = getElementById('playertext'); /<-- this doesn't work yet...
-	 // p.innerHTML = playerTotal;
-	 // playertext.appendChild(p);
-	 
-	 // p = document.createElement('p'); //<---this works but it makes a whole new p tag
-	 // p.className = 'player-text';
-	 // p.innerHTML = 'player total: ' + playerTotal;
-	 // playerArea.appendChild(p);
-
-
-	// playerDealt++
-	// playerAces
 }
 
 var pause = function() {
     console.log('pause. wallet has $' + wallet);
     console.log('pause. player has ' + playerTotal + ', dealer has ' + dealerTotal);
-    // checkForBlackjack();
 }
-
-/* deal function: 
-	  subtract money from the player's wallet
-	  pop a card from the main deck array
-	  push the card into the player's hand array
-	  DOM: display the player card 
-	  timeout
-	  pop a card from the main deck array
-	  push the card into the dealer's hand array
-	  DOM: display the dealer card FACEDOWN 
-	  * setAttribute for that card, id that makes it black
-	  timeout
-	  (again) pop a card from the main deck array
-	  (again) push the card into the player's hand array
-	  (again) DOM: display the player card 
-	  timeout
-	  pop a card from the main deck array
-	  push the card into the dealer's hand array
-	  DOM: display the dealer card
-	  display dealer's sum total
-	  display player's sum total 
-	  call ___checkForWin___
- */
-
 
 //*****************************
 // WIN CONDITIONS
@@ -263,13 +193,13 @@ var stand = function() {
 			console.log('dealer gets another card');
 		}
 	} 
-	if ((dealerTotal >= 17 && dealerTotal < 21) && (dealerTotal == playerTotal)) { //<-- this is a repeat of what's in stand function
+	if ((dealerTotal >= 17 && dealerTotal < 21) && (dealerTotal == playerTotal)) { 
 	    return pushed();
 	}
-	else if ((dealerTotal >= 17 && dealerTotal < 21) && (playerTotal > dealerTotal)) { //<-- this is a repeat of what's in stand function
+	else if ((dealerTotal >= 17 && dealerTotal < 21) && (playerTotal > dealerTotal)) { 
 		return win();
 	}
-	else if ((dealerTotal >= 17 && dealerTotal < 21) && (playerTotal < dealerTotal)) { //<-- this is a repeat of what's in stand function
+	else if ((dealerTotal >= 17 && dealerTotal < 21) && (playerTotal < dealerTotal)) { 
 		p = document.createElement('p'); 
 	    p.className = 'status';
 		p.innerHTML = 'Dealer wins';
@@ -295,11 +225,7 @@ var pushed = function() {
 	playerArea.appendChild(p);
 	
 	wallet = wallet + 5;
-	p = document.createElement('p'); 
-	p.className = 'status';
-	p.innerHTML = 'Wallet: $' + wallet;
-	playerArea.appendChild(p);
-	// console.log('push function: that is a push')
+	printStatus();
 }
 
 var bust = function() {
@@ -308,11 +234,7 @@ var bust = function() {
 	p.innerHTML = 'You busted!';
 	playerArea.appendChild(p);
 
-	p = document.createElement('p'); 
-	p.className = 'status';
-	p.innerHTML = 'Wallet: $' + wallet;
-	playerArea.appendChild(p);
-	// console.log('bust function: you busted')
+	printStatus();
 }
 
 var playerNaturalBlackjack = function() {
@@ -322,11 +244,7 @@ var playerNaturalBlackjack = function() {
 	playerArea.appendChild(p);
 	
 	wallet = wallet + 12.50;
-	p = document.createElement('p'); 
-	p.className = 'status';
-	p.innerHTML = 'Wallet: $' + wallet;
-	playerArea.appendChild(p);
-	// console.log('win function: player won!')
+	printStatus();
 }
 
 var win = function() {
@@ -336,11 +254,7 @@ var win = function() {
 	playerArea.appendChild(p);
 	
 	wallet = wallet + 10;
-	p = document.createElement('p'); 
-	p.className = 'status';
-	p.innerHTML = 'Wallet: $' + wallet;
-	playerArea.appendChild(p);
-	// console.log('win function: player won!')
+	printStatus();
 }
 
 var lose = function() {
@@ -349,51 +263,19 @@ var lose = function() {
 	p.innerHTML = 'You lose!';
 	playerArea.appendChild(p);
 
+	printStatus();
+}
+
+var printStatus = function() {
+	p = document.createElement('p'); 
+	p.className = 'status';
+	p.innerHTML = "Dealer had " + dealerTotal + " &mdash;  You had " + playerTotal;
+	playerArea.appendChild(p);
+
 	p = document.createElement('p'); 
 	p.className = 'status';
 	p.innerHTML = 'Wallet: $' + wallet;
-	playerArea.appendChild(p);
-	// console.log('win function: player won!')
+	var walletArea = document.getElementById('wallet-area');
+	walletArea.appendChild(p);
 }
-
-// var checkForWin = function {
-// 	if 
-// }
-
-/* checkForWin function
-	  // First, check for blackjacks
-	  if (dealerHand === playerHand) && (dealerHand <= 21) {
-		return push;
-	  } 
-	  else if (playerHand === 21) && (dealerHand !== 21) {
-	  	return ---player got blackjack
-	  	player win $$ add ___betAmount * 1.5x___ to wallet
-	  	deal button is on again
-	  }
-	  else if (dealerHand === 21) && (playerHand !== 21) {
-	    return ---dealer got blackjack
-	    player lose $$, subtract ___betAmount___ from wallet
-	    deal button is on again
-	  } 
-	  
-
-	  // Next, check to see if anyone has busted
-	  if (playerHand > 21) && (dealerHand)
-
-
-	  // Next, check to see if the player is eligible to hit 
-	  if (dealerHand < 21)
-
-
-
-	  else if (playerHand > 21) {
-	  	return ---bust 
-	  	player lose $$, subtract ___betAmount___ from wallet
-	  }
-	  else if () {
-		
-	  }
-
-	  _?_ are "push" and "winner" functions? wtf should they be?
- */
 
