@@ -1,8 +1,8 @@
 /* TO DO
 
-   Make "Deal" clear the cards off the table.
+   Disable buttons when they shouldn't be active.
 
-   Make "wallet" visible in DOM
+   Fix black dealer card
 
    BUG: The dealerTotal, when there's a dealerAce, is off. It gives too many cards to the dealer when stand() executes. 
    Example: the dealer was given 3,A,K,2,6,5. The dealer should not be given the last card (5) because he already had a total of
@@ -12,6 +12,8 @@
 
    BUG: I need to change it so the checkForBlackjack function isn't called every time a card goes down DURING THE INITIAL DEAL, 
    because it is printing a win twice, which also doubles the amount that goes in the wallet.
+   UPDATE: Without trying to change this, it appears to be fixed
+   UPDATE: "Dealer got blackjack" on initial deal - it prints twice on dealer area, and "you lose" prints twice on player area
 */
 
 //*****************************
@@ -104,6 +106,8 @@ var deal = function() {
 	dealerHand = [];
 	playerTotal = 0;
 	dealerTotal = 0;
+	playerAces = 0;
+	dealerAces = 0;
 	cards = [];
 	shuffle(theDeck);
 
@@ -126,7 +130,8 @@ var addCardToDealer = function() {
     dealerHand.push(newCard);
 	var lengthOfDealerHand = dealerHand.length - 1;
 	div = document.createElement('div');
-	div.className = 'card';
+	div.className = 'card black';
+	div.setAttribute('id', 'down');
 	var ascii_char = '&' + dealerHand[lengthOfDealerHand].suit + ';'; 
 	div.innerHTML = '<span class="number">' + dealerHand[lengthOfDealerHand].name + '</span><span class="suit"><sub>' + ascii_char + '</sub></span>';
 	dealerArea.appendChild(div); 
@@ -209,7 +214,7 @@ var checkForBlackjack = function() {
 		return pushed();
 	    // console.log("checkforblackjack function: push on blackjack");
 	}
-	else if (playerTotal == 21) {
+	else if ((playerTotal == 21) && (dealerHand.length == 2)) {
 	  	return playerNaturalBlackjack();
 	  	// console.log('checkforblackjack function: player got blackjack');
 	}
@@ -253,7 +258,7 @@ var hit = function() {
 }
 
 var stand = function() {
-	document.getElementById("dealer-area").classList.remove('black');
+	document.getElementById("down").className = document.getElementById("down").className.replace( /(?:^|\s)black(?!\S)/g , '' );
 	checkForBlackjack();
 	// if ((dealerTotal === playerTotal) && (dealerTotal >= 17)) { //<--
 	// 	return pushed();
