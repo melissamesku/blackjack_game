@@ -2,25 +2,26 @@
 <head>
 	<title>Blackjack</title>
 	<link href='https://fonts.googleapis.com/css?family=Muli' rel='stylesheet' type='text/css'>
+	<link href='https://fonts.googleapis.com/css?family=Noticia+Text' rel='stylesheet' type='text/css'>
 	<link rel="stylesheet" type="text/css" href="normalize.css">
 	<link rel="stylesheet" type="text/css" href="styles.css">
 </head>
 <body>
 	<div id="container">
+		<div class="labels">
+			<p>Dealer's hand</p>
+		</div>
 		<section class="card-container" id="dealer-area">
-			<div id="dealertext">
-				<p>Dealer's hand: </p>
-			</div>
 		</section>
+		<div class="labels">
+			<p>Player's hand</p>
+		</div>
 		<section class="card-container" id="player-area">
-			<div id="playertext">
-				<p>Player's hand: </p>
-			</div>
 		</section>
 		<div class="button-container">
 			<button onclick=deal()>Deal</button>
-			<button onclick=>Hit</button>
-			<button onclick=>Stand</button>
+			<button onclick=hit()>Hit</button>
+			<button onclick=stand()>Stand</button>
 			<br/>
 			<br/>
 			<!-- <button onclick="">Change Bet</button>
