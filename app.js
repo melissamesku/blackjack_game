@@ -167,6 +167,9 @@ var checkForBlackjack = function() {
 	    // console.log("checkforblackjack function: push on blackjack");
 	}
 	else if (playerTotal == 21) {
+		p = document.createElement('p'); //<---this works but it makes a whole new p tag
+		p.innerHTML = 'You got blackjack! ';
+		playerArea.appendChild(p);
 		// p = document.createElement('p'); //<---this works but it makes a whole new p tag
 		// p.innerHTML = 'You got blackjack! + $7.50';
 		// playerArea.appendChild(p);
@@ -180,7 +183,48 @@ var checkForBlackjack = function() {
 	  	// console.log('checkforblackjack function: dealer got blackjack');
 	  	return lose();
 	} 
-	else if ((dealerTotal >= 17 && dealerTotal < 21) && (dealerTotal == playerTotal)) { //<-- this is a repeat of what's in stand function
+	else if (playerTotal > 21) {
+		return bust();
+	}
+}
+
+var hit = function() {
+	if (playerTotal == 21) {
+		stand();
+	}
+	if (playerTotal <= 20) {
+		addCardToPlayer();
+		pause();
+		// console.log('added card to player. Player total is now ' + playerTotal);
+	}
+	// pause();
+}
+
+var stand = function() {
+	document.getElementById("dealer-area").classList.remove('black');
+	checkForBlackjack();
+	// if ((dealerTotal === playerTotal) && (dealerTotal >= 17)) { //<--
+	// 	return pushed();
+	// 	console.log('that is a push');
+	// }
+	// else if ((dealerTotal >= 17) && (playerTotal > dealerTotal)) { //<-- this is a repeat of what's in blackjack function
+	// 	return win();
+	// 	console.log('you win, dude');
+	// }
+	if (dealerTotal < 17) { 
+		for (var d=0; dealerTotal < 17; d++){
+			addCardToDealer();
+			console.log('dealer gets another card');
+			pause();
+		}
+	} 
+	// else if ((dealerTotal > playerTotal) && (dealerTotal >= 17)) { 
+	// 	return lose();
+	// 	console.log('stand function: you lost');
+	// }
+	// checkForBlackjack();
+
+	if ((dealerTotal >= 17 && dealerTotal < 21) && (dealerTotal == playerTotal)) { //<-- this is a repeat of what's in stand function
 	    return pushed();
 		// console.log('checkforblackjack function: that is a push');
 	}
@@ -213,43 +257,6 @@ var checkForBlackjack = function() {
 	}
 }
 
-var hit = function() {
-	if (playerTotal == 21) {
-		win();
-	}
-	if (playerTotal <= 20) {
-		addCardToPlayer();
-		pause();
-		console.log('added card to player. Player total is now ' + playerTotal);
-	}
-	// pause();
-}
-
-var stand = function() {
-	document.getElementById("dealer-area").classList.remove('black');
-
-	if ((dealerTotal === playerTotal) && (dealerTotal >= 17)) { //<--
-		return pushed();
-		console.log('that is a push');
-	}
-	else if ((dealerTotal >= 17) && (playerTotal > dealerTotal)) { //<-- this is a repeat of what's in blackjack function
-		return win();
-		console.log('you win, dude');
-	}
-	else if (dealerTotal < 17) { 
-		for (var d=0; dealerTotal < 17; d++){
-			addCardToDealer();
-			console.log('dealer gets another card');
-			pause();
-		}
-	} 
-	else if ((dealerTotal > playerTotal) && (dealerTotal >= 17)) { 
-		return lose();
-		console.log('stand function: you lost');
-	}
-	// checkForBlackjack();
-}
-
 var pushed = function() {
 	p = document.createElement('p'); //<--- this is inline, needs to be on separate line
 	// p.className = 'player-text';
@@ -262,7 +269,7 @@ var pushed = function() {
 var bust = function() {
 	p = document.createElement('p'); //<---this works but it makes a whole new p tag
 	// p.className = 'player-text';
-	p.innerHTML = 'You totally busted!';
+	p.innerHTML = 'You busted!';
 	playerArea.appendChild(p);
 	// console.log('bust function: you busted')
 }
