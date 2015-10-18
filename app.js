@@ -1,3 +1,12 @@
+/* To do: move some of the winning checks to the stand function, because we should be checking for all these win conditions
+   before "stand" happens. This way, the revealed black card makes sense; otherwise you're losing to the dealer and
+   you can't even see why
+
+   Make "Deal" clear the cards off the table.
+
+   If you get a natural blackjack on deal, it says "You win!" twice
+*/
+
 //*****************************
 // GLOBAL VARIABLES
 //*****************************
@@ -51,6 +60,15 @@ var theDeck = new deck();
 //*****************************
 
 var deal = function() {
+	// var removeCards = document.getElementsByClassName("cards");
+	// var elementsToRemove = [];
+	// for (var i = 0; i <removeCards.length; i++) {
+	//     elementsToRemove.push(removeCards[i]);
+	// }
+	// for(var i = 0; i < elementsToRemove.length; i++) {
+	//     elementsToRemove[i].parentNode.removeChild(elementsToRemove[i]);
+	// }
+
 	playerHand = [];
 	dealerHand = [];
 	cards = [];
@@ -77,7 +95,7 @@ var addCardToDealer = function() {
 	div = document.createElement('div');
 	div.className = 'card';
 	var ascii_char = '&' + dealerHand[lengthOfDealerHand].suit + ';'; 
-	div.innerHTML = '<span class="number">' + dealerHand[lengthOfDealerHand].name + '</span><span class="suit">' + ascii_char + '</span>';
+	div.innerHTML = '<span class="number">' + dealerHand[lengthOfDealerHand].name + '</span><span class="suit"><sub>' + ascii_char + '</sub></span>';
 	dealerArea.appendChild(div); 
 	dealerTotal = dealerTotal + newCard.value; 
 	var wait = setTimeout(pause, 2200);
@@ -91,7 +109,7 @@ var addCardToPlayer = function() {
 	div = document.createElement('div');
 	div.className = 'card';
 	var ascii_char = '&' + playerHand[lengthOfPlayerHand].suit + ';'; 
-	div.innerHTML = '<span class="number">' + playerHand[lengthOfPlayerHand].name + '</span><span class="suit">' + ascii_char + '</span>';
+	div.innerHTML = '<span class="number">' + playerHand[lengthOfPlayerHand].name + '</span><span class="suit"><sub>' + ascii_char + '</sub></span>';
 	playerArea.appendChild(div); 
 	playerTotal = playerTotal + newCard.value;
 	var wait = setTimeout(pause, 2200);
@@ -208,7 +226,8 @@ var hit = function() {
 }
 
 var stand = function() {
-	//dealer's card has to turn over now
+	document.getElementById("dealer-area").classList.remove('black');
+
 	if ((dealerTotal === playerTotal) && (dealerTotal >= 17)) { //<--
 		return pushed();
 		console.log('that is a push');
@@ -217,7 +236,7 @@ var stand = function() {
 		return win();
 		console.log('you win, dude');
 	}
-	else if (dealerTotal < 17) { //this condition is not working yet for some reason, and might need to be a loop
+	else if (dealerTotal < 17) { 
 		for (var d=0; dealerTotal < 17; d++){
 			addCardToDealer();
 			console.log('dealer gets another card');
