@@ -12,8 +12,8 @@
 
    BUG: I need to change it so the checkForBlackjack function isn't called every time a card goes down DURING THE INITIAL DEAL, 
    because it is printing a win twice, which also doubles the amount that goes in the wallet.
-   UPDATE: Without trying to change this, it appears to be fixed
    UPDATE: "Dealer got blackjack" on initial deal - it prints twice on dealer area, and "you lose" prints twice on player area
+   UPDATE - GOOD: "You got blackjack" prints once
 */
 
 //*****************************
@@ -211,19 +211,18 @@ var checkForBlackjack = function() {
 		p.className = 'status';
 		p.innerHTML = 'Damn! You both got Blackjack!';
 		dealerArea.appendChild(p);
+		document.getElementById("down").className = document.getElementById("down").className.replace( /(?:^|\s)black(?!\S)/g , '' );
 		return pushed();
-	    // console.log("checkforblackjack function: push on blackjack");
 	}
 	else if ((playerTotal == 21) && (dealerHand.length == 2)) {
 	  	return playerNaturalBlackjack();
-	  	// console.log('checkforblackjack function: player got blackjack');
 	}
 	else if ((dealerTotal == 21) && (dealerHand.length == 2)) {
 		p = document.createElement('p'); 
 		p.className = 'status';
 		p.innerHTML = 'Dealer got blackjack';
 		dealerArea.appendChild(p);
-	  	// console.log('checkforblackjack function: dealer got blackjack');
+		document.getElementById("down").className = document.getElementById("down").className.replace( /(?:^|\s)black(?!\S)/g , '' );
 	  	return lose();
 	} 
 	else if (dealerTotal == 21) {
@@ -231,14 +230,15 @@ var checkForBlackjack = function() {
 		p.className = 'status';
 		p.innerHTML = 'Dealer got 21';
 		dealerArea.appendChild(p);
-	  	// console.log('checkforblackjack function: dealer got blackjack');
 	  	return lose();
 	} 
 	else if ((playerAces >= 1) && (playerTotal > 21)) {
 		playerTotal = playerTotal - 10;
+		playerAces = playerAces - 1;
 	}
 	else if ((dealerAces >= 1) && (dealerTotal > 21)) {
 		dealerTotal = dealerTotal - 10;
+		dealerAces = dealerAces - 1;
 	}
 	else if (playerTotal > 21) {
 		return bust();
@@ -251,43 +251,23 @@ var hit = function() {
 	}
 	if (playerTotal <= 20) {
 		addCardToPlayer();
-		// pause();
-		// console.log('added card to player. Player total is now ' + playerTotal);
 	}
-	// pause();
 }
 
 var stand = function() {
 	document.getElementById("down").className = document.getElementById("down").className.replace( /(?:^|\s)black(?!\S)/g , '' );
 	checkForBlackjack();
-	// if ((dealerTotal === playerTotal) && (dealerTotal >= 17)) { //<--
-	// 	return pushed();
-	// 	console.log('that is a push');
-	// }
-	// else if ((dealerTotal >= 17) && (playerTotal > dealerTotal)) { //<-- this is a repeat of what's in blackjack function
-	// 	return win();
-	// 	console.log('you win, dude');
-	// }
 	if (dealerTotal < 17) { 
 		for (var d=0; dealerTotal < 17; d++){
 			addCardToDealer();
 			console.log('dealer gets another card');
-			// pause();
 		}
 	} 
-	// else if ((dealerTotal > playerTotal) && (dealerTotal >= 17)) { 
-	// 	return lose();
-	// 	console.log('stand function: you lost');
-	// }
-	// checkForBlackjack();
-
 	if ((dealerTotal >= 17 && dealerTotal < 21) && (dealerTotal == playerTotal)) { //<-- this is a repeat of what's in stand function
 	    return pushed();
-		// console.log('checkforblackjack function: that is a push');
 	}
 	else if ((dealerTotal >= 17 && dealerTotal < 21) && (playerTotal > dealerTotal)) { //<-- this is a repeat of what's in stand function
 		return win();
-		// console.log('checkforblackjack function: you win, dude');
 	}
 	else if ((dealerTotal >= 17 && dealerTotal < 21) && (playerTotal < dealerTotal)) { //<-- this is a repeat of what's in stand function
 		p = document.createElement('p'); 
@@ -295,7 +275,6 @@ var stand = function() {
 		p.innerHTML = 'Dealer wins';
 		dealerArea.appendChild(p);
 		return lose();
-		// console.log('checkforblackjack function: you win, dude');
 	}
 	else if ((dealerTotal > 21) && (playerTotal <= 21)) { 
 		p = document.createElement('p'); 
@@ -303,14 +282,9 @@ var stand = function() {
 		p.innerHTML = 'Dealer busted';
 		dealerArea.appendChild(p);
 		return win();
-		// console.log('checkforblackjack function: dealer busted, you win!');
 	}
 	else if (playerTotal > 21) {
 		return bust();
-		// p = document.createElement('p'); //<---this works but it makes a whole new p tag
-		// p.innerHTML = 'you went bust';
-		// playerArea.appendChild(p);
-		// console.log('checkforblackjack function: you busted');
 	}
 }
 
