@@ -21,6 +21,8 @@ var displayPlayerTotal;
 var displayDealerTotal;
 var playerTotal = 0;
 var dealerTotal = 0;
+var playerAces = 0;
+var dealerAces = 0;
 
 
 //*****************************
@@ -98,6 +100,9 @@ var addCardToDealer = function() {
 	div.innerHTML = '<span class="number">' + dealerHand[lengthOfDealerHand].name + '</span><span class="suit"><sub>' + ascii_char + '</sub></span>';
 	dealerArea.appendChild(div); 
 	dealerTotal = dealerTotal + newCard.value; 
+	if (newCard.value == 11) {
+		dealerAces = dealerAces + 1;
+	}
 	var wait = setTimeout(pause, 2200);
 	checkForBlackjack();
 }
@@ -112,6 +117,9 @@ var addCardToPlayer = function() {
 	div.innerHTML = '<span class="number">' + playerHand[lengthOfPlayerHand].name + '</span><span class="suit"><sub>' + ascii_char + '</sub></span>';
 	playerArea.appendChild(div); 
 	playerTotal = playerTotal + newCard.value;
+	if (newCard.value == 11) {
+		playerAces = playerAces + 1;
+	}
 	var wait = setTimeout(pause, 2200);
 	checkForBlackjack();
 	 // displayTotal = getElementById('playertext'); /<-- this doesn't work yet...
@@ -163,17 +171,14 @@ var pause = function() {
 //*****************************
 var checkForBlackjack = function() {
 	if ((dealerTotal == playerTotal) && (dealerTotal == 21)) {
+		p = document.createElement('p');
+		p.innerHTML = 'Damn! You both got Blackjack!';
+		dealerArea.appendChild(p);
 		return pushed();
 	    // console.log("checkforblackjack function: push on blackjack");
 	}
 	else if (playerTotal == 21) {
-		p = document.createElement('p'); //<---this works but it makes a whole new p tag
-		p.innerHTML = 'You got blackjack! ';
-		playerArea.appendChild(p);
-		// p = document.createElement('p'); //<---this works but it makes a whole new p tag
-		// p.innerHTML = 'You got blackjack! + $7.50';
-		// playerArea.appendChild(p);
-	  	return win();
+	  	return playerNaturalBlackjack();
 	  	// console.log('checkforblackjack function: player got blackjack');
 	}
 	else if (dealerTotal == 21) {
@@ -183,6 +188,12 @@ var checkForBlackjack = function() {
 	  	// console.log('checkforblackjack function: dealer got blackjack');
 	  	return lose();
 	} 
+	else if ((playerAces == 1) && (playerTotal > 21)) {
+		playerTotal - 10;
+	}
+	else if ((dealerAces == 1) && (dealerTotal > 21)) {
+		dealerTotal - 10;
+	}
 	else if (playerTotal > 21) {
 		return bust();
 	}
@@ -231,7 +242,6 @@ var stand = function() {
 	else if ((dealerTotal >= 17 && dealerTotal < 21) && (playerTotal > dealerTotal)) { //<-- this is a repeat of what's in stand function
 		return win();
 		// console.log('checkforblackjack function: you win, dude');
-		wallet = wallet + 5;
 	}
 	else if ((dealerTotal >= 17 && dealerTotal < 21) && (playerTotal < dealerTotal)) { //<-- this is a repeat of what's in stand function
 		p = document.createElement('p'); //<---this works but it makes a whole new p tag
@@ -246,7 +256,6 @@ var stand = function() {
 		dealerArea.appendChild(p);
 		return win();
 		// console.log('checkforblackjack function: dealer busted, you win!');
-		wallet = wallet + 5;
 	}
 	else if (playerTotal > 21) {
 		return bust();
@@ -272,6 +281,15 @@ var bust = function() {
 	p.innerHTML = 'You busted!';
 	playerArea.appendChild(p);
 	// console.log('bust function: you busted')
+}
+
+var playerNaturalBlackjack = function() {
+	p = document.createElement('p'); //<---this p tag is inline ---- it needs its own line --- this is happening twice
+	// p.className = 'player-text';
+	p.innerHTML = "You got blackjack!<br/>You win 1.5x your bet";
+	playerArea.appendChild(p);
+	wallet = wallet + 7.50;
+	// console.log('win function: player won!')
 }
 
 var win = function() {
