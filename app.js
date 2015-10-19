@@ -221,7 +221,7 @@ var stand = function() {
 var pushed = function() {
 	p = document.createElement('p'); 
 	p.className = 'status';
-	p.innerHTML = 'you got a push!';
+	p.innerHTML = 'Push';
 	playerArea.appendChild(p);
 	
 	wallet = wallet + 5;
@@ -231,7 +231,7 @@ var pushed = function() {
 var bust = function() {
 	p = document.createElement('p');
 	p.className = 'status';
-	p.innerHTML = 'You busted!';
+	p.innerHTML = 'You busted';
 	playerArea.appendChild(p);
 
 	printStatus();
@@ -240,7 +240,7 @@ var bust = function() {
 var playerNaturalBlackjack = function() {
 	p = document.createElement('p');
 	p.className = 'status';
-	p.innerHTML = "You got blackjack!<br/>You win 1.5x your bet";
+	p.innerHTML = "Blackjack<br/>You win 1.5x your bet";
 	playerArea.appendChild(p);
 	
 	wallet = wallet + 12.50;
@@ -250,7 +250,7 @@ var playerNaturalBlackjack = function() {
 var win = function() {
 	p = document.createElement('p'); 
 	p.className = 'status';
-	p.innerHTML = 'You win!';
+	p.innerHTML = 'You win';
 	playerArea.appendChild(p);
 	
 	wallet = wallet + 10;
@@ -269,7 +269,7 @@ var lose = function() {
 var printStatus = function() {
 	p = document.createElement('p'); 
 	p.className = 'status';
-	p.innerHTML = "Dealer had " + dealerTotal + " &mdash;  You had " + playerTotal;
+	p.innerHTML = "You had " + playerTotal + " &mdash; Dealer had " + dealerTotal;
 	playerArea.appendChild(p);
 
 	p = document.createElement('p'); 
