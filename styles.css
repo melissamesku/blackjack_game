@@ -25,15 +25,15 @@ button {
 }
 
 #container {
-	padding-top: 55px;
+	padding-top: 32px;
 	margin: 0 auto;
-	vertical-align: middle;
 }
 
 .card-container {
 	height: 150px;
 	padding: 5px 0 25px 0;
 	text-align: center;
+	width:100%;
 }
 
 .button-container {
@@ -61,8 +61,8 @@ button {
 
 .card {
 	background-color: #eee;
-	height:72px;
-	width:46px;
+	height:84px;
+	width:55px;
 	border: 1px solid black;
 	border-radius: 5px;
 	display: inline-block;
@@ -74,7 +74,10 @@ button {
 
 section#dealer-area .black:first-of-type {
 	background: url(images/card-back.jpg) no-repeat center center;	
-	background-size: cover;
+	-webkit-background-size: cover;
+	  -moz-background-size: cover;
+	  -o-background-size: cover;
+	  background-size: cover;
 	color:transparent;
 }
 
