@@ -1,40 +1,65 @@
-/* TO DO
+/* NOTES : BUG FIXES AND UPDATES
 
-   Disable buttons when they shouldn't be active.
-
-   BUG: The dealerTotal, when there's a dealerAce, is off. It gives too many cards to the dealer when stand() executes. 
+   BUG --UPDATE: THIS HAS BEEN FIXED-- : The dealerTotal, when there's a dealerAce, is off. It gives too many cards to the dealer when stand() executes. 
    Example: the dealer was given 3,A,K,2,6,5. The dealer should not be given the last card (5) because he already had a total of
    22 after dealerAces subtracts 10. Oddly, playerAces seems to work fine. Example: player got 3,A,K and won with that hand. 
    Player natural blackjack printed twice. Oddly, other situations don't print twice. I don't know why just this one thing 
    (the player natural blackjack) prints twice. 
-   UPDATE: I think this is fixed; I need to keep playing to test it
+   UPDATE: Fixed
 
-   BUG: I need to change it so the checkForBlackjack function isn't called every time a card goes down DURING THE INITIAL DEAL, 
-   because it is printing a win twice, which also doubles the amount that goes in the wallet.
-   UPDATE: "Dealer got blackjack" on initial deal - it prints twice on dealer area, and "you lose" prints twice on player area
-   UPDATE - GOOD: "You got blackjack" prints once
+   BUG --UPDATE: THIS HAS BEEN FIXED-- : Need to make dealer's card turn over when dealer only has two cards but the player wins (?) (or busts!).
+   This seems to only happen sometimes (two cards each, and player won 20 to 18, and dealers card did in fact turn over). CONFIRMED.  
+   GOOD: Looks like it's fixed: when player wins and dealer loses with two cards, results are good and card turns over correctly.
+   GOOD: When player busts and dealer has two cards, card does not turn over but this is OK - we don't need to see dealer card!
+   GOOD: When both players push with only two cards each, everything's good - the card turns over correctly.
+   DEBUG NOTE: GOOD: When you win and dealer has 3 cards, it's fine (dealer card turns over). 
+   DEBUG NOTE: GOOD: When you push, even when dealer has only two cards, all's well (dealer card turns over). 
+   DEBUG NOTE: GOOD: When you lose to dealer blackjack or when dealer still has only two cards, it's fine (dealer card turns over).
+   DEBUG NOTE: GOOD: When you both have two cards and both push, at least under 21, dealer card turns over
+   UPDATE: Fixed
+
+   BUG --UPDATE: THIS HAS BEEN FIXED-- : When player gets 21 with three cards, it still stays "blackjack", when actually it should just say that player wins, because
+   a blackjack is technically when you only have two cards. 
+   UPDATE: Fixed 
+
+   POSSIBLE FEATURE UPGRADE: Disable buttons when they don't need to be active.
+   POSSIBLE FEATURE UPGRADE: Add splitting functionality?
+   POSSIBLE FEATURE UPGRADE: Play with more decks of cards
+   POSSIBLE FEATURE UPGRADE: Make it so natural blackjack requires a face card, not just a 10
+   POSSIBLE FEATURE UPGRADE: Give subsequent dealer cards a setTimeout
+   POSSIBLE FEATURE UPGRADE: Make hearts and diamonds red
+
+   JAN 26-27: 
+   FIXED SOME BUGS & CREATED NEW ONES
+   BUG: When dealer gets 21, and player loses with less points, the results print twice. (I think this is fixed now)
+   BUG: Player had blackjack on first deal; dealer did not, but no results were printed at all. CONFIRMED, but when I hit "stand" there's A DIFFERENT PROBLEM:
+   BUG (NEW): Player had blackjack on first deal, dealer did not, but results printed like 4 times because it checked for every new card he was dealt, but he shouldn't be dealt anything once I get blackjack, also I had to hit "stand" for that to happen
+   ...this means that 
+   GOOD: When dealer gets natural blackjack 21, and player loses with less points, results correct. CONFIRMED!
 */
 
 //*****************************
 // GLOBAL VARIABLES
 //*****************************
 
-var playerHand = []; // should this be in global scope or inside this function?
-var dealerHand = []; // should this be in global scope or inside this function?
-var cards = []; //this is also named inside the deck function, but i think it should be in global scope instead
+// var playerHand = []; 
+// var dealerHand = []; 
+var cards = []; 
 var wallet = 100;
 var playerArea = document.getElementById('player-area');
 var dealerArea = document.getElementById('dealer-area');
-var displayPlayerTotal;
-var displayDealerTotal;
-var playerTotal = 0;
-var dealerTotal = 0;
-var playerAces = 0;
-var dealerAces = 0;
+var newCard;
+// var displayPlayerTotal;
+// var displayDealerTotal;
+// var playerTotal = 0;
+// var dealerTotal = 0;
+// var playerAces = 0;
+// var dealerAces = 0;
+// var blackjacks = 0;
 
 
 //*****************************
-// CREATE DECK ARRAY
+// CREATE A SHUFFLED DECK
 //*****************************
 
 var card = function(value, name, suit){
@@ -44,10 +69,10 @@ var card = function(value, name, suit){
 }
 
 var deck = function(){
+    this.values = [11, 2, 3, 4, 5, 6, 7, 8, 9, 10, 10, 10, 10];
     this.names = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K'];
     this.suits = ['hearts','diams','spades','clubs'];
-    this.values = [11, 2, 3, 4, 5, 6, 7, 8, 9, 10, 10, 10, 10];
-    var cards = []; // I think this might need to be in global scope also/instead
+    
     for (var s=0; s<this.suits.length; s++) {
         for(var n=0; n<this.names.length; n++) {
             cards.push(new card(this.values[n], this.names[n], this.suits[s]) );
@@ -63,9 +88,11 @@ var shuffle = function(deck) {
 
 var theDeck = new deck();
 
+shuffle(theDeck);
+
 
 //*****************************
-// DEAL
+// DEAL 'EM
 //*****************************
 
 var deal = function() {
@@ -73,9 +100,9 @@ var deal = function() {
 	while (removeCards[0]) {
 		removeCards[0].parentNode.removeChild(removeCards[0]);
 	}
-	var removeP = container.getElementsByClassName("status");
-	while (removeP[0]) {
-		removeP[0].parentNode.removeChild(removeP[0]);
+	var removeStatus = container.getElementsByClassName("status");
+	while (removeStatus[0]) {
+		removeStatus[0].parentNode.removeChild(removeStatus[0]);
 	}
 	playerHand = [];
 	dealerHand = [];
@@ -83,19 +110,21 @@ var deal = function() {
 	dealerTotal = 0;
 	playerAces = 0;
 	dealerAces = 0;
+	blackjacks = 0;
 	cards = [];
-	shuffle(theDeck);
 	wallet = wallet - 5;
 	addCardToPlayer();
-	var waitDealer = setTimeout(addCardToDealer, 700);
-	var waitPlayer = setTimeout(addCardToPlayer, 1400);
-	var waitDealer2 = setTimeout(addCardToDealer, 2100);
+	setTimeout(addCardToDealer, 700);
+	setTimeout(addCardToPlayer, 1400);
+	setTimeout(addCardToDealer, 2100);
+	// console.log(theDeck.length);
 }
+
 
 var addCardToDealer = function() {
     var newCard = theDeck.pop();
     dealerHand.push(newCard);
-	var lengthOfDealerHand = dealerHand.length - 1;
+	lengthOfDealerHand = dealerHand.length - 1;
 	div = document.createElement('div');
 	div.className = 'card black';
 	div.setAttribute('id', 'down');
@@ -106,14 +135,17 @@ var addCardToDealer = function() {
 	if (newCard.value == 11) {
 		dealerAces = dealerAces + 1;
 	}
-	var wait = setTimeout(pause, 2200);
-	checkForBlackjack();
+	setTimeout(2200);
+	if ((lengthOfDealerHand >= 1) && (blackjacks == 0)) {
+		checkForBlackjack();
+		// console.log("checkForBlackjack in addCardToDealer " + blackjacks);
+	}
 }
 
 var addCardToPlayer = function() {
 	var newCard = theDeck.pop(); 
 	playerHand.push(newCard);
-	var lengthOfPlayerHand = playerHand.length - 1;
+	lengthOfPlayerHand = playerHand.length - 1;
 	div = document.createElement('div');
 	div.className = 'card';
 	var ascii_char = '&' + playerHand[lengthOfPlayerHand].suit + ';'; 
@@ -123,20 +155,24 @@ var addCardToPlayer = function() {
 	if (newCard.value == 11) {
 		playerAces = playerAces + 1;
 	}
-	var wait = setTimeout(pause, 2200);
-	checkForBlackjack();
+	setTimeout(2200);
+	if ((lengthOfPlayerHand >= 1) && (blackjacks == 0)) {
+		checkForBlackjack();
+		// console.log("checkForBlackjack in addCardToPlayer " + blackjacks);
+	}
 }
 
-var pause = function() {
-    console.log('pause. wallet has $' + wallet);
-    console.log('pause. player has ' + playerTotal + ', dealer has ' + dealerTotal);
-}
 
 //*****************************
 // WIN CONDITIONS
-//******************************
+//*****************************
+
 var checkForBlackjack = function() {
-	if ((dealerTotal == playerTotal) && (dealerTotal == 21)) {
+	if (blackjacks == 1) {
+		console.log('blackjack already declared, so these hands are over'); //not sure if this works yet
+		return;
+	}
+	else if ((dealerTotal == playerTotal) && (dealerTotal == 21)) {
 		p = document.createElement('p');
 		p.className = 'status';
 		p.innerHTML = 'Damn! You both got Blackjack!';
@@ -144,7 +180,9 @@ var checkForBlackjack = function() {
 		document.getElementById("down").className = document.getElementById("down").className.replace( /(?:^|\s)black(?!\S)/g , '' );
 		return pushed();
 	}
-	else if ((playerTotal == 21) && (dealerHand.length == 2)) {
+	else if ((playerTotal == 21) && (playerHand.length == 2)) {
+		document.getElementById("down").className = document.getElementById("down").className.replace( /(?:^|\s)black(?!\S)/g , '' );
+	  	blackjacks = blackjacks + 1;
 	  	return playerNaturalBlackjack();
 	}
 	else if ((dealerTotal == 21) && (dealerHand.length == 2)) {
@@ -153,6 +191,7 @@ var checkForBlackjack = function() {
 		p.innerHTML = 'Dealer got blackjack';
 		dealerArea.appendChild(p);
 		document.getElementById("down").className = document.getElementById("down").className.replace( /(?:^|\s)black(?!\S)/g , '' );
+	  	blackjacks = blackjacks + 1;
 	  	return lose();
 	} 
 	else if (dealerTotal == 21) {
@@ -160,6 +199,7 @@ var checkForBlackjack = function() {
 		p.className = 'status';
 		p.innerHTML = 'Dealer got 21';
 		dealerArea.appendChild(p);
+		blackjacks = blackjacks + 1;
 	  	return lose();
 	} 
 	else if ((playerAces >= 1) && (playerTotal > 21)) {
@@ -278,4 +318,6 @@ var printStatus = function() {
 	var walletArea = document.getElementById('wallet-area');
 	walletArea.appendChild(p);
 }
+
+
 
